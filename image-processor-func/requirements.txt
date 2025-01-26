@@ -1,0 +1,5 @@
+functions-framework==3.8.2
+requests>=2.32.3
+Pillow==11.1.0
+cloudevents==1.11.0
+packaging==25.0
