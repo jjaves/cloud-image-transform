@@ -6,6 +6,7 @@ import io
 import re
 from enum import Enum
 from dataclasses import dataclass
+from os import environ
 
 
 class ImgFmt(Enum):
@@ -132,6 +133,8 @@ def _apply_grayscale(img: Image.Image) -> Image.Image:
     """Converts an image to grayscale if it's not already."""
     if img.mode not in ("L", "1"):
         return img.convert("L")
+    if img.mode == "1":
+        img = img.convert("L")
     return img
 
 
@@ -151,6 +154,15 @@ def _apply_background_color(img: Image.Image, r: int, g: int, b: int) -> Image.I
 @functions_framework.http
 def process_image_for_transformation(flask_request):
     """HTTP Cloud Function to fetch, convert, and return an image."""
+    try:
+        api_key = environ.get("CLOUD_IMAGE_API_KEY")
+        provided_api_key = flask_request.args.get("apikey")
+        if not provided_api_key or provided_api_key != api_key:
+            return "Unauthorized: Access is denied due to an invalid API key.", 401
+    except Exception as e:
+        print(f"Error checking API key: {e}")
+        return "Authorization Failed: Access is denied.", 401
+
     try:
         original_image_url = flask_request.args.get("url")
         if not original_image_url:
