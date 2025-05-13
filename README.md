@@ -58,3 +58,32 @@ To test the image processing function locally, run the Flask development server:
 ```bash
 python local_dev.py
 ```
+
+### Additional Examples
+
+#### Resize Image
+
+  <details>
+  <summary> Original Image </summary>
+    <img title="Original" alt="a pup" src="https://storage.googleapis.com/misc-shared-images-public/rita-pup.png">
+  </details>
+
+  <details>
+  <summary> Resized Image </summary>
+    <img title="Original" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300">
+  </details>
+
+  <details>
+  <summary> Add Background and reduce quality/image size </summary>
+    <img title="Original" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1">
+  </details>
+
+  <details>
+  <summary> Make grayscale </summary>
+    <img title="Original" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&gs=1">
+  </details>
+
+  <details>
+  <summary> Rotate!  </summary>
+    <img title="90 rotate" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&rotate=90"><img title="180 rotate" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&rotate=180"><img title="270 rotate" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&rotate=270">
+  </details>
