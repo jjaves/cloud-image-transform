@@ -95,33 +95,43 @@ def _calculate_target_dimensions(
     target_height_str: str | None,
 ) -> tuple[int, int]:
     """Calculates target dimensions, maintaining aspect ratio if one dimension is missing."""
-    target_width = int(target_width_str) if target_width_str else None
-    target_height = int(target_height_str) if target_height_str else None
 
-    if target_width and not target_height:
-        aspect_ratio = original_height / original_width
-        target_height = int(target_width * aspect_ratio)
-    elif not target_width and target_height:
-        aspect_ratio = original_width / original_height
-        target_width = int(target_height * aspect_ratio)
-    elif not target_width and not target_height:
-        target_width = original_width
-        target_height = original_height
+    def parse_positive_int(s: str | None) -> int | None:
+        if s is None:
+            return None
+        try:
+            val = int(s)
+            return val if val > 0 else None
+        except ValueError:
+            return None
+        
+    target_w = parse_positive_int(target_width_str)
+    target_h = parse_positive_int(target_height_str)
 
-    if target_width is None:
-        target_width = original_width
-    if target_height is None:
-        target_height = original_height
+    if target_w is not None and target_h is not None:
+        return target_w, target_h
 
-    return target_width, target_height
+    if target_w is not None:
+        if original_width > 0:
+            calculated_th = int(target_w * (float(original_height) / original_width))
+        else:
+            calculated_th = 0
+        return target_w, calculated_th
+
+    if target_h is not None:
+        if original_height > 0:
+            calculated_tw = int(target_h * (float(original_width) / original_height))
+        else:
+            calculated_tw = 0
+        return calculated_tw, target_h
+
+    return original_width, original_height
 
 
 def _apply_grayscale(img: Image.Image) -> Image.Image:
     """Converts an image to grayscale if it's not already."""
     if img.mode not in ("L", "1"):
-        img = ImageOps.grayscale(img)
-    if img.mode != "L":
-        img = img.convert("L")
+        return img.convert("L")
     return img
 
 
