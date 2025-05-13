@@ -35,6 +35,7 @@ Parameters:
  - `gs`: boolean for grayscale. eg. `&gs=1`
  - `bg`: to set transparency background color. eg. `&bg=rgb(9,189,201)`
  - `rotate`: Pick from 90, 180, and 270. eg. `&rotate=180`
+ - `apikey`: Check incoming request for validation. eg `&apikey=<api-key-you-create>`
  
 ## Components
 
@@ -44,7 +45,8 @@ Parameters:
     *   Optionally rotates the image.
     *   Optionally converts the image to grayscale.
     *   Optionally applies a background color, RGB.
-    *   Returns a PNG.
+    *   Optionally reduces quality of JPEGs and WEBPs.
+    *   Returns a PNG, JPEG, or WEBP.
     *   The entry point for the function is [`process_image_for_transformation`](image_processor_func/main.py).
 
 
