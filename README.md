@@ -27,7 +27,7 @@ Example using `?url=https://storage.googleapis.com/misc-shared-images-public/rit
   
 
 Parameters:
- - `url`:  url of image to ingest. eg. `?url=https://site.io/image.png`
+ - `url`: REQUIRED. url of image to ingest. eg. `?url=https://site.io/image.png`
  - `w`: width in pixels. Applying just width will auto scale height. eg. `&w=300`
  - `h`: height in pixels. Applying just height will auto scale width. eg. `&h=150`
  - `fmt`: outputs image format in jpeg, png, or webp only. Default is png. eg. `&fmt=jpeg`
@@ -63,6 +63,36 @@ The project uses Conda for environment management. You can create and activate t
     conda activate cloud-image-transform
   ```
 
+### Create .env File
+In root directory of this folder. Update the `<values>` for Cloud Run and apikey.
+```bash
+  export CLOUD_IMAGE_API_KEY="<api-key-you-create>"
+  export GCF_FUNCTION_NAME_ENV_VAR="<your-google-cloud-function-name>"
+  export GCF_REGION_ENV_VAR="<GCP-region-you-picked>"
+```
+
+`apikey` can be optional, just comment out the following in [`image_processor_func/main.py`](./image_processor_func/main.py):
+```python
+  try:
+      api_key = environ.get("CLOUD_IMAGE_API_KEY")
+      provided_api_key = flask_request.args.get("apikey")
+      if not provided_api_key or provided_api_key != api_key:
+          return "Unauthorized: Access is denied due to an invalid API key.", 401
+  except Exception as e:
+      print(f"Error checking API key: {e}")
+      return "Authorization Failed: Access is denied.", 401
+```
+
+_This approach uses a header parameter for basic auth, alternatively, security could be achieved directly within GCP's IAM._
+
+
+### Local Development
+To test the image processing function locally, run the Flask development server:
+```bash
+python local_dev.py
+```
+
+
 ### Google Cloud Function
 - Deployment: The Google Cloud Function can be deployed using the deploy script:
   ```bash
@@ -72,11 +102,6 @@ The project uses Conda for environment management. You can create and activate t
 
 - Dependencies: Python dependencies for the cloud function are listed in `requirements.txt`
 
-### Local Development
-To test the image processing function locally, run the Flask development server:
-```bash
-python local_dev.py
-```
 
 ### Additional Examples
 
