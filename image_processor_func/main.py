@@ -4,6 +4,38 @@ from PIL import Image, ImageOps
 import requests
 import io
 import re
+from enum import Enum
+from dataclasses import dataclass
+
+class ImgFmt(Enum):
+   JPEG = 'JPEG'
+   JPEG2000  = 'JPEG2000'
+   WEBP = 'WEBP'
+   PNG  = 'PNG'
+   AVIF = 'AVIF'
+   BMP  = 'BMP'
+   ICO  = 'ICO'
+   GIF  = 'GIF'
+   TIFF = 'TIFF'
+
+@dataclass(frozen=True)
+class FmtTrts:
+   lossless: bool
+   alpha: bool
+   mmtype: str
+   output: bool
+
+FMT_TRAITS_MAP = {
+   ImgFmt.JPEG: FmtTrts(lossless=False, alpha=False, mmtype='image/jpeg', output=True),
+   ImgFmt.WEBP: FmtTrts(lossless=True, alpha=True, mmtype='image/webp', output=True),
+   ImgFmt.PNG: FmtTrts(lossless=True, alpha=True, mmtype='image/png', output=True),
+   ImgFmt.AVIF: FmtTrts(lossless=True, alpha=True, mmtype='image/avif', output=False),
+   ImgFmt.BMP: FmtTrts(lossless=True, alpha=False, mmtype='image/bmp', output=False),
+   ImgFmt.JPEG2000: FmtTrts(lossless=False, alpha=True, mmtype='image/jpeg2000',output=False),
+   ImgFmt.ICO: FmtTrts(lossless=True, alpha=True, mmtype='image/vnd.microsoft.icon', output=False),
+   ImgFmt.GIF: FmtTrts(lossless=False, alpha=True, mmtype='image/gif', output=False),
+   ImgFmt.TIFF: FmtTrts(lossless=True, alpha=True, mmtype='image/tiff', output=False),
+}
 
 
 def _parse_bg_color_string(bg_color_str: str | None) -> tuple[int, int, int] | None:
@@ -31,8 +63,9 @@ def _fetch_image(url: str) -> Image.Image:
    """Fetches an image from a URL."""
    image_response = requests.get(url, stream=True, timeout=30)
    image_response.raise_for_status()
-
-   return Image.open(image_response.raw)
+   img = Image.open(image_response.raw)
+   original_format = img.format
+   return img, original_format
 
 
 def _rotate_image(img: Image.Image, degrees: int) -> tuple[Image.Image, int, int]:
@@ -102,14 +135,36 @@ def process_image_for_transformation(flask_request):
       target_width_str = flask_request.args.get('w')
       target_height_str = flask_request.args.get('h')
       rotate_degrees = int(flask_request.args.get('rotate', 0))
-      
       bg_color_str = flask_request.args.get('bg')
-      print(bg_color_str)
       parsed_bg_color = _parse_bg_color_string(bg_color_str)
-
       set_grayscale = bool(int(flask_request.args.get('gs', 0)))
+      requested_format_str = flask_request.args.get('fmt')
+      set_quality = int(flask_request.args.get('qlt', 90))
+      img, original_format_str = _fetch_image(original_image_url)
 
-      img = _fetch_image(original_image_url)
+      try:
+         if original_format_str:
+            original_format_enum = ImgFmt[original_format_str.upper()]
+         else:
+            return "Error: Could not determine the format of the original image.", 400
+      except KeyError:
+         return f"Error: Original image format '{original_format_str}' is not supported.", 400
+
+      output_format_enum = None
+      if requested_format_str:
+         try:
+            requested_format_enum = ImgFmt[requested_format_str.upper()]
+            if requested_format_enum in FMT_TRAITS_MAP and FMT_TRAITS_MAP[requested_format_enum].output:
+               output_format_enum = requested_format_enum
+            else:
+               return f"Error: Requested format '{requested_format_str}' is not supported for output.", 400
+         except KeyError:
+            return f"Error: Requested format '{requested_format_str}' is invalid.", 400
+      else:
+         if original_format_enum in FMT_TRAITS_MAP and FMT_TRAITS_MAP[original_format_enum].output:
+            output_format_enum = original_format_enum
+         else:
+            output_format_enum = ImgFmt.PNG
 
       img, original_width, original_height = _rotate_image(img, rotate_degrees)
 
@@ -120,36 +175,35 @@ def process_image_for_transformation(flask_request):
       if target_width <= 0 or target_height <= 0:
          return "Error: Target width and height must be positive values.", 400
       img = img.resize((target_width, target_height), Image.Resampling.LANCZOS)
-      print(f"Mode after resize: {img.mode}")
 
       if parsed_bg_color:
          img = _apply_background_color(img, *parsed_bg_color)
-         print(f"Mode after background color: {img.mode}")
 
       if set_grayscale:
          img = _apply_grayscale(img)
-         print(f"Mode after grayscale: {img.mode}")
+
+      output_format_traits = FMT_TRAITS_MAP[output_format_enum]
+
+      if not output_format_traits.alpha and img.mode in ('RGBA', 'LA', 'P'):
+         if img.mode == 'P' and 'transparency' in img.info:
+              img = img.convert('RGBA')
+         img = img.convert('RGB')
+      elif output_format_traits.alpha and img.mode not in ('RGBA', 'LA') :
+         if 'transparency' in img.info or img.mode == 'P':
+            img = img.convert('RGBA')
       
       byte_arr = io.BytesIO()
 
-      if img.mode == 'P' and 'transparency' in img.info:
-         img = _apply_grayscale(img)
+      pillow_output_format_str = output_format_enum.value 
       
-      byte_arr = io.BytesIO()
-      output_format = 'PNG'
-
-      if img.mode == 'P' and 'transparency' in img.info:
-         img = img.convert('RGBA')
-      elif img.mode == 'LA' or img.mode == 'RGBA':
-         pass
-
-      img.save(byte_arr, format=output_format)
+      img.save(byte_arr, format=pillow_output_format_str, optimize=True, quality=set_quality)
       byte_arr.seek(0)
 
-      response = make_response(send_file(byte_arr, mimetype=f'image/{output_format.lower()}'))
-      # response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-      # response.headers['Pragma'] = 'no-cache'
-      # response.headers['Expires'] = '0'
+      mime_type = output_format_traits.mmtype
+      response = make_response(send_file(byte_arr, mimetype=mime_type))
+      response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+      response.headers['Pragma'] = 'no-cache'
+      response.headers['Expires'] = '0'
       return response
 
    except requests.exceptions.RequestException as e:
