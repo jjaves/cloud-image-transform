@@ -5,9 +5,26 @@ This tool will fetch, re-process, and display images from the web. It uses Googl
 ### Quick Example usage
 `<your-GCP-func-url.com>/<your-endpoint>?url=<external-image-url>&w=300&gs=1&fmt=png`
 
-Example using `?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(9,189,201)&fmt=jpeg`
+Original Image: https://storage.googleapis.com/misc-shared-images-public/rita-pup.png
 
-  <img title="a title" alt="Alt text" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(9,189,201)&fmt=jpeg">
+Example using `?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(9,189,201)&fmt=jpeg&qlt=1`
+  <table>
+  <tr>
+    <td align="center">
+      <strong>Resize</strong><br>
+      <img title="Resize" alt="a pup" src="./example_images/rita-pup-width500.png">
+    </td>
+    <td align="center">
+      <strong>Set Background Color</strong><br>
+      <img title="Set Background Color" alt="a pup" src="./example_images/rita-pup-blue.jpeg">
+    </td>
+    <td align="center">
+      <strong>Reduce File Size</strong><br>
+      <img title="Reduce File Size" alt="a pup" src="./example_images/rita-pup-blue-low-res.jpeg">
+    </td>
+  </tr>
+</table>
+  
 
 Parameters:
  - `url`:  url of image to ingest. eg. `?url=https://site.io/image.png`
@@ -65,25 +82,32 @@ python local_dev.py
 
   <details>
   <summary> Original Image </summary>
-    <img title="Original" alt="a pup" src="https://storage.googleapis.com/misc-shared-images-public/rita-pup.png">
+    <img title="Original" alt="a pup" src="./example_images/rita-pup.png">
   </details>
 
   <details>
-  <summary> Resized Image </summary>
-    <img title="Original" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300">
+  <summary> Resized Image <code> &w=300</code>
+  </summary>
+    <img title="Resized" alt="a pup" src="./example_images/rita-pup-resized.png">
   </details>
 
   <details>
-  <summary> Add Background and reduce quality/image size </summary>
-    <img title="Original" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1">
+  <summary> Add Background and reduce quality/file size  <code> &bg=rgb(99,200,140)&quality=1(</code></summary>
+    <img title="Background" alt="a pup" src="./example_images/rita-pup-lowres.jpeg">
   </details>
 
   <details>
-  <summary> Make grayscale </summary>
-    <img title="Original" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&gs=1">
+  <summary> Make grayscale <code> &gs=1</code></summary>
+    <img title="grayscale" alt="a pup" src="./example_images/rita-pup-gray.jpeg">
   </details>
 
   <details>
-  <summary> Rotate!  </summary>
-    <img title="90 rotate" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&rotate=90"><img title="180 rotate" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&rotate=180"><img title="270 rotate" alt="a pup" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(99,200,140)&fmt=jpeg&qlt=1&rotate=270">
+  <summary> Rotate!  <code> &rotate=90 &rotate=180 &rotate=270</code>
+  </summary>
+    <img title="90 rotate" alt="a pup" src="./example_images/rita-pup-90.jpeg"><img title="180 rotate" alt="a pup" src="./example_images/rita-pup-180.jpeg"><img title="270 rotate" alt="a pup" src="./example_images/rita-pup-270.jpeg">
+  </details>
+
+  <details>
+  <summary> Setting width and height can distort the image  <code> &w=300&h=250</code></summary>
+    <img title="width and height" alt="a pup" src="./example_images/rita-pup-width-height.jpeg">
   </details>
