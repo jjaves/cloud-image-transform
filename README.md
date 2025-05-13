@@ -2,15 +2,22 @@
 
 This tool will fetch, re-process, and display images from the web. It uses Google Cloud Function for image manipulation.
 
-### Example usage
-`<your-GCP-func-url.com>/<your-endpoint>?url=<external-image-url>&w=300&gs=1`
+### Quick Example usage
+`<your-GCP-func-url.com>/<your-endpoint>?url=<external-image-url>&w=300&gs=1&fmt=png`
+
+Example using `?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(9,189,201)&fmt=jpeg`
+
+  <img title="a title" alt="Alt text" src="https://us-west1-trmnl-byos-01.cloudfunctions.net/image-transform?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(9,189,201)&fmt=jpeg">
 
 Parameters:
- - `w`: width in pixels. eg. `&w=300`
- - `h`: height in pixels. eg. `&h=150`
- - `gs`: boolean for grayscale. eg. `gs=1`
- - `bg`: to set transparency background color. eg. `bg=rgb(255,0,0)`
- - `rotate`: Pick from 90, 180, and 270. eg. `rotate=180`
+ - `url`:  url of image to ingest. eg. `?url=https://site.io/image.png`
+ - `w`: width in pixels. Applying just width will auto scale height. eg. `&w=300`
+ - `h`: height in pixels. Applying just height will auto scale width. eg. `&h=150`
+ - `fmt`: outputs image format in jpeg, png, or webp only. Default is png. eg. `&fmt=jpeg`
+ - `qlt`: for jpeg and webp, decreases the image quality and file size. Default is 90. eg. `&qlt=10`
+ - `gs`: boolean for grayscale. eg. `&gs=1`
+ - `bg`: to set transparency background color. eg. `&bg=rgb(9,189,201)`
+ - `rotate`: Pick from 90, 180, and 270. eg. `&rotate=180`
  
 ## Components
 
