@@ -1,6 +1,6 @@
 import functions_framework
 from flask import send_file, make_response
-from PIL import Image, ImageOps
+from PIL import Image
 import requests
 import io
 import re
@@ -105,7 +105,7 @@ def _calculate_target_dimensions(
             return val if val > 0 else None
         except ValueError:
             return None
-        
+
     target_w = parse_positive_int(target_width_str)
     target_h = parse_positive_int(target_height_str)
 
