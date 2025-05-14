@@ -1,3 +1,5 @@
+[![Deploy to Google Cloud Functions](https://github.com/jjaves/cloud-image-transform/actions/workflows/deploy.yml/badge.svg)](https://github.com/jjaves/cloud-image-transform/actions/workflows/deploy.yml)
+
 # Cloud Image Transform
 
 This tool will fetch, re-process, and display images from the web. It uses Google Cloud Function for image manipulation.
