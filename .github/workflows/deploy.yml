@@ -3,7 +3,11 @@ name: Deploy to Google Cloud Run using deploy.sh
 on:
   push:
     branches:
-      - main 
+      - main
+    paths:
+      - deploy.sh
+      - .github/workflows/deploy.yml
+      - image_processor_func/**
 
 jobs:
   deploy:
