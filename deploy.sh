@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+[ -f .env ] && source .env
 
 PROJECT_ID=$(gcloud config get-value project)
 if [ -z "$PROJECT_ID" ]; then
