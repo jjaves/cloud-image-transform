@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 from os import path
+from image_processor_func.main import process_image_for_transformation
+from flask import Flask, request
 
 script_dir = path.abspath(path.dirname(__file__))
 dotenv_file_path = path.join(script_dir, '.env')
@@ -10,8 +12,6 @@ if path.exists(dotenv_file_path):
 else:
     print(f"local_dev.py: .env file not found at {dotenv_file_path}. ")
 
-from image_processor_func.main import process_image_for_transformation
-from flask import Flask, request
 
 app = Flask(__name__)
 
