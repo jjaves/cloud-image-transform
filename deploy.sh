@@ -28,7 +28,6 @@ ENV_VAR_NAME_IN_FUNCTION="CLOUD_IMAGE_API_KEY"
 REGION=${GCF_REGION_ENV_VAR}
 FUNCTION_NAME=${GCF_FUNCTION_NAME_ENV_VAR}
 
-echo "Deploying function ${FUNCTION_NAME} from project ${PROJECT_ID} in region ${REGION}..."
 
 
 gcloud functions deploy ${FUNCTION_NAME} \
@@ -45,7 +44,7 @@ gcloud functions deploy ${FUNCTION_NAME} \
 EXIT_CODE=$?
 if [ $EXIT_CODE -eq 0 ]; then
   echo "Function deployed successfully."
-  echo "Function URL: $(gcloud functions describe ${FUNCTION_NAME} --gen2 --project=${PROJECT_ID} --region=${REGION} --format='value(serviceConfig.uri)')"
+  # echo "Function URL: $(gcloud functions describe ${FUNCTION_NAME} --gen2 --project=${PROJECT_ID} --region=${REGION} --format='value(serviceConfig.uri)')"
 else
   echo "Function deployment failed with exit code $EXIT_CODE."
 fi
