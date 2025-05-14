@@ -2,26 +2,29 @@
 
 # Cloud Image Transform
 
-This tool will fetch, re-process, and display images from the web. It uses Google Cloud Function for image manipulation.
+This tool will fetch, re-process, and display images from the web. It uses [Pillow](https://pillow.readthedocs.io/en/stable/) for on the fly image manipulation. Run it locally or on a [Google Cloud Function](https://cloud.google.com/application-integration/docs/configure-cloud-function-task). 
 
 ### Quick Example usage
-`<your-GCP-func-url.com>/<your-endpoint>?url=<external-image-url>&w=300&gs=1&fmt=png`
+`<localhost or Cloud Function>/<your-endpoint>?url=<external-image-url>&w=300&gs=1&fmt=png`
 
-Original Image: https://storage.googleapis.com/misc-shared-images-public/rita-pup.png
+Original Image: https://storage.googleapis.com/misc-shared-images-public/rita-pup.png (3.5 MB 1817 x 2837)
 
 Example using `?url=https://storage.googleapis.com/misc-shared-images-public/rita-pup.png&w=300&bg=rgb(9,189,201)&fmt=jpeg&qlt=1`
   <table>
   <tr>
     <td align="center">
       <strong>Resize</strong><br>
+      (327 KB, 500 x 780)
       <img title="Resize" alt="a pup" src="./example_images/rita-pup-width500.png">
     </td>
     <td align="center">
       <strong>Set Background Color</strong><br>
+      (24 KB, 300 x 468)
       <img title="Set Background Color" alt="a pup" src="./example_images/rita-pup-blue.jpeg">
     </td>
     <td align="center">
       <strong>Reduce File Size</strong><br>
+      (2 KB, 300 x 468)
       <img title="Reduce File Size" alt="a pup" src="./example_images/rita-pup-blue-low-res.jpeg">
     </td>
   </tr>
