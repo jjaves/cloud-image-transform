@@ -34,5 +34,5 @@ jobs:
       - name: Make deploy script executable
         run: chmod +x ./deploy.sh
 
-      - name: Deploy to Cloud Functions using script
+      - name: Deploy to Google Cloud Functions using script
         run: ./deploy.sh
